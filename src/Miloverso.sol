@@ -2,44 +2,59 @@
 pragma solidity ^0.8.13;
 
 import "lib/ERC721A/contracts/ERC721A.sol";
+import "lib/openzeppelin-contracts/contracts/utils/cryptography/MerkleProof.sol";
+import "lib/openzeppelin-contracts/contracts/utils/cryptography/ECDSA.sol";
+import "lib/openzeppelin-contracts/contracts/access/Ownable.sol";
 
-contract MiloVerso is ERC721A {
-    address public owner;
-    uint256 public maxSupply = 10_000;
-    uint256 public constant tokenPrice = 0.1 ether;
-    string public baseURI;
-    SaleStatus public status;
+contract Miloverso is ERC721A, Ownable {
+    using ECDSA for bytes32;
+
+    uint256 public maxSupply;
+    uint256 public tokenPrice;
+    uint256 public status;
     bytes32 public whitelistMerkleRoot;
+    string public baseURI;
+    bool public revealed;
     mapping(address => bool) public claimedWhitelist;
 
-    enum SaleStatus {
-        NOT_STARTED,
-        ACTIVE,
-        REVEALED
-    }
-
-    modifier onlyOwner() {
-        require(msg.sender == owner, "only owner allowed");
-        _;
-    }
-
-    constructor(
-        address initialOwner,
-        string memory unrevealedURI,
-        bytes32 initialMerkleRoot
-    ) ERC721A("Miloverso", "MILO") {
-        status = SaleStatus.NOT_STARTED;
-        owner = initialOwner;
+    constructor(string memory unrevealedURI, bytes32 initialMerkleRoot)
+        ERC721A("Miloverso", "MILO")
+    {
+        status = 0;
         baseURI = unrevealedURI;
         whitelistMerkleRoot = initialMerkleRoot;
+        tokenPrice = 0.029 ether;
+        maxSupply = 2_222;
     }
 
     // USER PUBLIC MINT
-    function publicMint(uint256 amount) public payable {
+    function whitelistMint(uint256 amount, bytes32[] memory proof)
+        public
+        payable
+    {
+        require(status == 1, "whitelist mint has not started");
         require(
-            status != SaleStatus.NOT_STARTED,
-            "public mint has not started"
+            MerkleProof.verify(
+                proof,
+                whitelistMerkleRoot,
+                keccak256(abi.encodePacked(msg.sender))
+            ),
+            "not whitelisted"
         );
+        require(
+            !claimedWhitelist[msg.sender],
+            "whitelisetd user already claimed"
+        );
+        require(totalSupply() + amount <= maxSupply, "max supply reached");
+        require(amount <= 3, "max mint amount is 3");
+        require(msg.value >= amount * tokenPrice, "not enough eth sent");
+
+        claimedWhitelist[msg.sender] = true;
+        _mint(msg.sender, amount);
+    }
+
+    function publicMint(uint256 amount) public payable {
+        require(status == 2, "public mint has not started");
         require(totalSupply() + amount <= maxSupply, "max supply reached");
         require(amount <= 3, "max mint amount is 3");
         require(msg.value >= amount * tokenPrice, "not enough eth sent");
@@ -61,22 +76,25 @@ contract MiloVerso is ERC721A {
         }
     }
 
-    function ownerMint(address recipient, uint256 amount) public onlyOwner {
-        _safeMint(recipient, amount);
-    }
-
-    function startMint() public onlyOwner {
-        status = SaleStatus.ACTIVE;
+    function updateStatus(uint256 newStatus) public onlyOwner {
+        status = newStatus;
     }
 
     function reveal(string memory revealedURI) public onlyOwner {
-        status = SaleStatus.REVEALED;
+        revealed = true;
         baseURI = revealedURI;
     }
 
-    function transferOwnership(address newOwner) public onlyOwner {
-        require(newOwner != address(0), "address zero can't be owner");
-        owner = newOwner;
+    function increaseSupply(uint256 newSupply) public onlyOwner {
+        require(
+            newSupply >= maxSupply && newSupply <= 11_111,
+            "invalid new supply"
+        );
+        maxSupply = newSupply;
+    }
+
+    function updatePrice(uint256 newPrice) public onlyOwner {
+        tokenPrice = newPrice;
     }
 
     function withdraw(address recipient) public onlyOwner {
