@@ -89,7 +89,7 @@ contract Miloverso is ERC721A, Ownable {
             revert MaxSupplyReached();
         }
 
-        if (_numberMinted(msg.sender) + amount > 3) {
+        if (_numberMinted(msg.sender) + amount > 5) {
             revert MaxAmountPerUser();
         }
 
