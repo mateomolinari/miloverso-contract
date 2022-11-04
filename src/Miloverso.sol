@@ -15,11 +15,30 @@ contract Miloverso is ERC721A, Ownable {
     bytes32 public whitelistMerkleRoot;
     string public baseURI;
     bool public revealed;
-    mapping(address => bool) public claimedWhitelist;
+    address[] private payees;
+    uint256[] private payeesShares;
 
-    constructor(string memory unrevealedURI, bytes32 initialMerkleRoot)
-        ERC721A("Miloverso", "MILO")
-    {
+    error WrongValueSent(uint256 weiSent, uint256 weiRequired);
+    error InvalidNewSupply(uint256 desiredSupply, uint256 currentSupply);
+    error NotWhitelisted();
+    error MaxAmountPerUser();
+    error MaxSupplyReached();
+    error WhitelistMintNotStarted();
+    error PublicMintNotStarted();
+    error FailedToSendEther();
+    error MismatchingLengths();
+
+    constructor(
+        string memory unrevealedURI,
+        bytes32 initialMerkleRoot,
+        address[] memory _payees,
+        uint256[] memory _shares
+    ) ERC721A("Miloverso", "MILO") {
+        if (_payees.length != _shares.length) {
+            revert MismatchingLengths();
+        }
+        payees = _payees;
+        payeesShares = _shares;
         status = 0;
         baseURI = unrevealedURI;
         whitelistMerkleRoot = initialMerkleRoot;
@@ -32,33 +51,53 @@ contract Miloverso is ERC721A, Ownable {
         public
         payable
     {
-        require(status == 1, "whitelist mint has not started");
-        require(
-            MerkleProof.verify(
+        if (_numberMinted(msg.sender) + amount > 3) {
+            revert MaxAmountPerUser();
+        }
+
+        if (status != 1) {
+            revert WhitelistMintNotStarted();
+        }
+
+        if (
+            !MerkleProof.verify(
                 proof,
                 whitelistMerkleRoot,
                 keccak256(abi.encodePacked(msg.sender))
-            ),
-            "not whitelisted"
-        );
-        require(
-            !claimedWhitelist[msg.sender],
-            "whitelisetd user already claimed"
-        );
-        require(totalSupply() + amount <= maxSupply, "max supply reached");
-        require(amount <= 3, "max mint amount is 3");
-        require(msg.value >= amount * tokenPrice, "not enough eth sent");
+            )
+        ) {
+            revert NotWhitelisted();
+        }
 
-        claimedWhitelist[msg.sender] = true;
-        _mint(msg.sender, amount);
+        if (totalSupply() + amount > maxSupply) {
+            revert MaxSupplyReached();
+        }
+
+        if (msg.value < amount * tokenPrice) {
+            revert WrongValueSent(msg.value, amount * tokenPrice);
+        }
+
+        _safeMint(msg.sender, amount);
     }
 
     function publicMint(uint256 amount) public payable {
-        require(status == 2, "public mint has not started");
-        require(totalSupply() + amount <= maxSupply, "max supply reached");
-        require(amount <= 3, "max mint amount is 3");
-        require(msg.value >= amount * tokenPrice, "not enough eth sent");
-        _mint(msg.sender, amount);
+        if (status != 2) {
+            revert PublicMintNotStarted();
+        }
+
+        if (totalSupply() + amount > maxSupply) {
+            revert MaxSupplyReached();
+        }
+
+        if (_numberMinted(msg.sender) + amount > 3) {
+            revert MaxAmountPerUser();
+        }
+
+        if (msg.value < amount * tokenPrice) {
+            revert WrongValueSent(msg.value, amount * tokenPrice);
+        }
+
+        _safeMint(msg.sender, amount);
     }
 
     // OWNER ACTIONS
@@ -67,8 +106,13 @@ contract Miloverso is ERC721A, Ownable {
         onlyOwner
     {
         uint length = recipients.length;
-        require(length == amounts.length, "different length arrays");
+        if (length != amounts.length) {
+            revert MismatchingLengths();
+        }
         for (uint i = 0; i < length; ) {
+            if (totalSupply() + amounts[i] > maxSupply) {
+                revert MaxSupplyReached();
+            }
             _mint(recipients[i], amounts[i]);
             unchecked {
                 ++i;
@@ -80,16 +124,15 @@ contract Miloverso is ERC721A, Ownable {
         status = newStatus;
     }
 
-    function reveal(string memory revealedURI) public onlyOwner {
-        revealed = true;
-        baseURI = revealedURI;
+    function updateRevealStatus(bool _revealed, string memory _newBaseURI)
+        public
+        onlyOwner
+    {
+        revealed = _revealed;
+        baseURI = _newBaseURI;
     }
 
     function increaseSupply(uint256 newSupply) public onlyOwner {
-        require(
-            newSupply >= maxSupply && newSupply <= 11_111,
-            "invalid new supply"
-        );
         maxSupply = newSupply;
     }
 
@@ -99,11 +142,31 @@ contract Miloverso is ERC721A, Ownable {
 
     function withdraw(address recipient) public onlyOwner {
         (bool success, ) = recipient.call{value: address(this).balance}("");
-        require(success, "ether transfer failed");
+        if (!success) {
+            revert FailedToSendEther();
+        }
     }
 
     function updateWhitelist(bytes32 newMerkleRoot) public onlyOwner {
         whitelistMerkleRoot = newMerkleRoot;
+    }
+
+    function pay() public onlyOwner {
+        uint length = payees.length;
+        uint256 balance = address(this).balance;
+
+        for (uint i = 0; i < length; ) {
+            uint256 ethToSend = (balance * payeesShares[i]) / 100;
+            (bool success, ) = payees[i].call{value: ethToSend}("");
+
+            if (!success) {
+                revert FailedToSendEther();
+            }
+
+            unchecked {
+                ++i;
+            }
+        }
     }
 
     // OVERRIDES
