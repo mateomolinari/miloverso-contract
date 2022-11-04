@@ -1,0 +1,52 @@
+{
+  "transactions": [
+    {
+      "hash": "0x59aa3314be1a8cddecaa1b6080271863827417beba75b2704f2954a175f26752",
+      "transactionType": "CALL",
+      "contractName": null,
+      "contractAddress": "0x08ffc1bec1723d85A5a0463E0217B15fFc97Fe88",
+      "function": null,
+      "arguments": null,
+      "transaction": {
+        "type": "0x02",
+        "from": "0x8ca6838b559cd890cd3759d924269dbda7e43efe",
+        "to": "0x08ffc1bec1723d85a5a0463e0217b15ffc97fe88",
+        "gas": "0xf701",
+        "value": "0x0",
+        "data": "0xd61e72010000000000000000000000000000000000000000000000000000000000000002",
+        "nonce": "0x2acc",
+        "accessList": []
+      },
+      "additionalContracts": []
+    },
+    {
+      "hash": "0x8d0f2b388b825b4057826f1e2dbf608cf5b3a1102c4a462c1164c08b5329b365",
+      "transactionType": "CALL",
+      "contractName": null,
+      "contractAddress": "0x08ffc1bec1723d85A5a0463E0217B15fFc97Fe88",
+      "function": null,
+      "arguments": null,
+      "transaction": {
+        "type": "0x02",
+        "from": "0x8ca6838b559cd890cd3759d924269dbda7e43efe",
+        "to": "0x08ffc1bec1723d85a5a0463e0217b15ffc97fe88",
+        "gas": "0x22cce",
+        "value": "0x1351609ff758000",
+        "data": "0x2db115440000000000000000000000000000000000000000000000000000000000000003",
+        "nonce": "0x2acd",
+        "accessList": []
+      },
+      "additionalContracts": []
+    }
+  ],
+  "receipts": [],
+  "libraries": [],
+  "pending": [
+    "0x59aa3314be1a8cddecaa1b6080271863827417beba75b2704f2954a175f26752",
+    "0x8d0f2b388b825b4057826f1e2dbf608cf5b3a1102c4a462c1164c08b5329b365"
+  ],
+  "path": "/home/mmolinari/projects/miloverso-contract/broadcast/Miloverso.s.sol/5/run-latest.json",
+  "returns": {},
+  "timestamp": 1667588893,
+  "commit": "280d2d0"
+}

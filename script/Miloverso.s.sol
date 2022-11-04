@@ -44,7 +44,7 @@ contract Deploy is Script {
     }
 
     function run() external {
-        uint256 deployerPrivateKey = vm.envUint("DEPLOYER_PRIVATE_KEY");
+        uint256 deployerPrivateKey = vm.envUint("GOERLI_TEST_KEY");
         vm.startBroadcast(deployerPrivateKey);
 
         Miloverso miloverso = new Miloverso(
@@ -59,3 +59,4 @@ contract Deploy is Script {
         vm.stopBroadcast();
     }
 }
+
