@@ -1,0 +1,32 @@
+{
+  "transactions": [
+    {
+      "hash": "0x367de2dbd38bd7a4d8d09f9ebd3ffd2c07b9e684bcb3f498fe3247da2fe597a8",
+      "transactionType": "CALL",
+      "contractName": null,
+      "contractAddress": "0xBC56479cED29961297956f0f3ABcA6b83677b73E",
+      "function": null,
+      "arguments": null,
+      "transaction": {
+        "type": "0x02",
+        "from": "0x8ca6838b559cd890cd3759d924269dbda7e43efe",
+        "to": "0xbc56479ced29961297956f0f3abca6b83677b73e",
+        "gas": "0x9ce0",
+        "value": "0x0",
+        "data": "0x2152cb0240058babc838e04777a4ef7a80864d84a9b957af3f229ebe886aec9f14e9df34",
+        "nonce": "0x2ad6",
+        "accessList": []
+      },
+      "additionalContracts": []
+    }
+  ],
+  "receipts": [],
+  "libraries": [],
+  "pending": [
+    "0x367de2dbd38bd7a4d8d09f9ebd3ffd2c07b9e684bcb3f498fe3247da2fe597a8"
+  ],
+  "path": "/home/mmolinari/projects/miloverso-contract/broadcast/Whitelist.s.sol/5/run-latest.json",
+  "returns": {},
+  "timestamp": 1667683431,
+  "commit": "e6d945c"
+}

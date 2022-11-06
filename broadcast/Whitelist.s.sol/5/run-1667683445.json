@@ -1,0 +1,47 @@
+{
+  "transactions": [
+    {
+      "hash": "0x367de2dbd38bd7a4d8d09f9ebd3ffd2c07b9e684bcb3f498fe3247da2fe597a8",
+      "transactionType": "CALL",
+      "contractName": null,
+      "contractAddress": "0xBC56479cED29961297956f0f3ABcA6b83677b73E",
+      "function": null,
+      "arguments": null,
+      "transaction": {
+        "type": "0x02",
+        "from": "0x8ca6838b559cd890cd3759d924269dbda7e43efe",
+        "to": "0xbc56479ced29961297956f0f3abca6b83677b73e",
+        "gas": "0x9ce0",
+        "value": "0x0",
+        "data": "0x2152cb0240058babc838e04777a4ef7a80864d84a9b957af3f229ebe886aec9f14e9df34",
+        "nonce": "0x2ad6",
+        "accessList": []
+      },
+      "additionalContracts": []
+    }
+  ],
+  "receipts": [
+    {
+      "transactionHash": "0x367de2dbd38bd7a4d8d09f9ebd3ffd2c07b9e684bcb3f498fe3247da2fe597a8",
+      "transactionIndex": "0x5",
+      "blockHash": "0xd5fa17aa9d1a3788f4782aac785c9165956b887a2c485b4144c4cf60a014c312",
+      "blockNumber": "0x7886ee",
+      "from": "0x8CA6838b559cd890cd3759D924269dbdA7e43EFE",
+      "to": "0xBC56479cED29961297956f0f3ABcA6b83677b73E",
+      "cumulativeGasUsed": "0x115c9f",
+      "gasUsed": "0x7194",
+      "contractAddress": null,
+      "logs": [],
+      "status": "0x1",
+      "logsBloom": "0x00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+      "type": "0x2",
+      "effectiveGasPrice": "0xb2d1793a"
+    }
+  ],
+  "libraries": [],
+  "pending": [],
+  "path": "/home/mmolinari/projects/miloverso-contract/broadcast/Whitelist.s.sol/5/run-latest.json",
+  "returns": {},
+  "timestamp": 1667683445,
+  "commit": "e6d945c"
+}

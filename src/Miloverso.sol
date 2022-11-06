@@ -179,4 +179,6 @@ contract Miloverso is ERC721A, Ownable {
     {
         return baseURI;
     }
+
+    receive() external payable {}
 }

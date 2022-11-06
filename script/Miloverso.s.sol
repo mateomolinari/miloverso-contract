@@ -7,7 +7,8 @@ import "../src/Miloverso.sol";
 contract Deploy is Script {
     address[] public payees;
     uint256[] public shares;
-    bytes32 public merkleRoot = 0x0;
+    bytes32 public merkleRoot =
+        0x241370e7c5b820720811ca50c00adac71b2a1ae16f07a986deeb6b5fc1ef04c4;
     string unrevealedURI =
         "https://qurable-main.mypinata.cloud/ipfs/QmWQSzb4dzNNCV4jRzDbWiztddM27JbM5HtNoAE1Mo1ic1/";
 
@@ -59,4 +60,3 @@ contract Deploy is Script {
         vm.stopBroadcast();
     }
 }
-
