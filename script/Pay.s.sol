@@ -4,19 +4,19 @@ pragma solidity ^0.8.13;
 import "forge-std/Script.sol";
 import "../src/Miloverso.sol";
 
-contract Mint is Script {
+contract Pay is Script {
     Miloverso public milo;
 
     function setUp() public {
-        milo = Miloverso(payable(0x08ffc1bec1723d85A5a0463E0217B15fFc97Fe88));
+        milo = Miloverso(payable(0xBC56479cED29961297956f0f3ABcA6b83677b73E));
     }
 
     function run() external {
         uint256 deployerPrivateKey = vm.envUint("GOERLI_TEST_KEY");
         vm.startBroadcast(deployerPrivateKey);
 
-        milo.updateStatus(2);
-        milo.publicMint{value: 0.029 ether * 3}(3);
+        address(milo).call{value: 1 ether}("");
+        milo.pay();
 
         vm.stopBroadcast();
     }
