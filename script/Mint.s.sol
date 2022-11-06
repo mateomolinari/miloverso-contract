@@ -8,7 +8,7 @@ contract Mint is Script {
     Miloverso public milo;
 
     function setUp() public {
-        milo = Miloverso(0x08ffc1bec1723d85A5a0463E0217B15fFc97Fe88);
+        milo = Miloverso();
     }
 
     function run() external {
